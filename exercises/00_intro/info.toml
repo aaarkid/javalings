@@ -1,0 +1,14 @@
+[[exercises]]
+name = "intro1"
+path = "Intro1.java"
+hint = """
+Remove the `// I AM NOT DONE` comment line. That is all.
+"""
+
+[[exercises]]
+name = "intro2"
+path = "Intro2.java"
+hint = """
+Java wants a semicolon at the end of every statement.
+The compiler error even tells you the line number: look for "';' expected".
+"""
