@@ -1,0 +1,41 @@
+[[exercises]]
+name = "variables1"
+path = "Variables1.java"
+hint = """
+The declaration needs a type. `x` holds a whole number, so: `int x = 5;`
+"""
+
+[[exercises]]
+name = "variables2"
+path = "Variables2.java"
+hint = """
+`int x;` creates the variable but gives it nothing. Java refuses to read a
+variable that might be empty. Write `int x = 10;` (or any other number).
+"""
+
+[[exercises]]
+name = "variables3"
+path = "Variables3.java"
+hint = """
+`number` is an int, so "three" (a String) cannot go into it.
+Use the number 3 instead of the word.
+"""
+
+[[exercises]]
+name = "variables4"
+path = "Variables4.java"
+hint = """
+You have two options: remove `final`, or keep the constant and print a
+different variable with the value 4. Either one is a fine answer.
+"""
+
+[[exercises]]
+name = "variables5"
+path = "Variables5.java"
+hint = """
+Match each value to the table in the comment. "Ada" is a String, 13 is an int,
+1.62 is a double, true is a boolean, 'A' is a char.
+
+Check.equals is a tiny helper that stops the program if a value is wrong.
+You will see it a lot in the coming exercises.
+"""
