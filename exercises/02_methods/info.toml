@@ -1,0 +1,36 @@
+[[exercises]]
+name = "methods1"
+path = "Methods1.java"
+hint = """
+Add this inside the class, below main:
+
+    static void callMe() {
+        System.out.println("You called me!");
+    }
+
+The method has to be `static` because main is static too.
+"""
+
+[[exercises]]
+name = "methods2"
+path = "Methods2.java"
+hint = """
+`num` is an int, so the parameter is written `int num`.
+"""
+
+[[exercises]]
+name = "methods3"
+path = "Methods3.java"
+hint = """
+Two things: the method returns an int, so `void` becomes `int`.
+And the calculation needs `return` in front of it.
+"""
+
+[[exercises]]
+name = "methods4"
+path = "Methods4.java"
+hint = """
+    static boolean isEven(int n) {
+        return n % 2 == 0;
+    }
+"""
