@@ -1,0 +1,35 @@
+[[exercises]]
+name = "if1"
+path = "If1.java"
+hint = """
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+
+Every path through the method must return something, otherwise the compiler
+complains with "missing return statement".
+"""
+
+[[exercises]]
+name = "if2"
+path = "If2.java"
+hint = """
+Use input.equals("fizz"). Then add an `else if` branch for "fuzz".
+"""
+
+[[exercises]]
+name = "if3"
+path = "If3.java"
+hint = """
+    return switch (day) {
+        case 1 -> "Monday";
+        case 2 -> "Tuesday";
+        ...
+        default -> "Unknown";
+    };
+
+Do not forget the semicolon after the closing brace: the whole switch is one
+expression that gets returned.
+"""
