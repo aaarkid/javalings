@@ -1,0 +1,40 @@
+[[exercises]]
+name = "primitive_types1"
+path = "PrimitiveTypes1.java"
+hint = """
+Cast one side before dividing: `return (double) total / count;`
+Casting the whole result, `(double) (total / count)`, is too late: the
+division already happened with ints.
+"""
+
+[[exercises]]
+name = "primitive_types2"
+path = "PrimitiveTypes2.java"
+hint = """
+3000000000 does not fit in an int. Use `long seconds = 3000000000L;`.
+
+For the product: even if `million` fits in an int, million * million does
+not. Make `product` a long, and make sure the multiplication happens with
+longs: `long product = (long) million * million;` or make `million` a long.
+"""
+
+[[exercises]]
+name = "primitive_types3"
+path = "PrimitiveTypes3.java"
+hint = """
+`c + 1` is an int, so it needs a cast: `return (char) (c + 1);`
+
+For the vowel check, lowercase first and compare against each vowel:
+    char l = Character.toLowerCase(c);
+    return l == 'a' || l == 'e' || l == 'i' || l == 'o' || l == 'u';
+Or the short way: "aeiou".indexOf(l) >= 0.
+"""
+
+[[exercises]]
+name = "primitive_types4"
+path = "PrimitiveTypes4.java"
+hint = """
+`a + b` on two Strings glues them together ("2" + "3" is "23").
+Parse both first: `int sum = Integer.parseInt(a) + Integer.parseInt(b);`
+then turn the result back into text with String.valueOf(sum).
+"""
