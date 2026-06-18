@@ -1,0 +1,40 @@
+[[exercises]]
+name = "strings1"
+path = "Strings1.java"
+hint = """
+firstChar: s.charAt(0)
+lastChar:  s.charAt(s.length() - 1)   (no negative indexes in Java!)
+withoutFirst: s.substring(1)          (one argument means "to the end")
+"""
+
+[[exercises]]
+name = "strings2"
+path = "Strings2.java"
+hint = """
+`shout` returns the new string, but main throws it away.
+Keep it: `word = shout(word);`
+"""
+
+[[exercises]]
+name = "strings3"
+path = "Strings3.java"
+hint = """
+repeat: make a StringBuilder, append `s` in a for loop that runs `times`
+times, return sb.toString().
+
+reverse: loop i from s.length() - 1 down to 0 and append s.charAt(i).
+"""
+
+[[exercises]]
+name = "strings4"
+path = "Strings4.java"
+hint = """
+capitalizeWords:
+    String[] words = sentence.split(" ");
+    for (int i = 0; i < words.length; i++) {
+        words[i] = Character.toUpperCase(words[i].charAt(0)) + words[i].substring(1);
+    }
+    return String.join(" ", words);
+
+csvSum: split on ",", parse each piece with Integer.parseInt, add them up.
+"""
