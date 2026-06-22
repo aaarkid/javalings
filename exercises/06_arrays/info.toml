@@ -1,0 +1,41 @@
+[[exercises]]
+name = "arrays1"
+path = "Arrays1.java"
+hint = """
+`scores.length` without parentheses. And with 4 elements the last index is 3,
+not 4. Java stops the program with ArrayIndexOutOfBoundsException if you go
+past the end, Python would say IndexError.
+"""
+
+[[exercises]]
+name = "arrays2"
+path = "Arrays2.java"
+hint = """
+sum: start with `int total = 0;`, add every element, return total.
+max: start with `int best = arr[0];` and replace it whenever you see
+something bigger. Starting with 0 would be wrong for negative arrays.
+"""
+
+[[exercises]]
+name = "arrays3"
+path = "Arrays3.java"
+hint = """
+    int[] result = new int[arr.length + 1];
+    for (int i = 0; i < arr.length; i++) {
+        result[i] = arr[i];
+    }
+    result[arr.length] = value;
+    return result;
+"""
+
+[[exercises]]
+name = "arrays4"
+path = "Arrays4.java"
+hint = """
+rowSums: `int[] sums = new int[grid.length];` then a loop over rows and an
+inner loop over the values in that row.
+
+transpose: the new grid has grid[0].length rows and grid.length columns:
+    int[][] t = new int[grid[0].length][grid.length];
+    t[c][r] = grid[r][c] for every r and c.
+"""
