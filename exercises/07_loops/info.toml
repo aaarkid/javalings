@@ -1,0 +1,39 @@
+[[exercises]]
+name = "loops1"
+path = "Loops1.java"
+hint = """
+    StringBuilder sb = new StringBuilder();
+    for (int i = n; i >= 1; i--) {
+        sb.append(i).append(" ");
+    }
+    sb.append("liftoff");
+    return sb.toString();
+"""
+
+[[exercises]]
+name = "loops2"
+path = "Loops2.java"
+hint = """
+firstMultiple: inside the loop, `if (n % k == 0) return n;` then `n++;`.
+Returning from inside a `while (true)` is a normal way to leave it; `break`
+would work too but then you need a return after the loop.
+
+countOdd: `if (x % 2 == 0) continue;` then `count++;`.
+"""
+
+[[exercises]]
+name = "loops3"
+path = "Loops3.java"
+hint = """
+Outer loop for the row r (1..n), inner loop for the column c (1..n).
+Append r * c, then a space if c < n, and a "\\n" after the inner loop.
+"""
+
+[[exercises]]
+name = "loops4"
+path = "Loops4.java"
+hint = """
+Check 15 first (or check % 3 and % 5 separately and build the word).
+For fizzBuzz(n): collect fizzBuzzOf(i) for i = 1..n into a StringBuilder,
+adding "\\n" before every element except the first.
+"""
