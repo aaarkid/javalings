@@ -1,0 +1,62 @@
+[[exercises]]
+name = "classes1"
+path = "Classes1.java"
+hint = """
+Inside Counter, add a field and a constructor:
+
+    int value;
+
+    Counter(int start) {
+        value = start;
+    }
+
+Only one class per file may be `public`, that is why Counter has no `public`
+in front of it. It is a helper class in the same file.
+"""
+
+[[exercises]]
+name = "classes2"
+path = "Classes2.java"
+hint = """
+    void deposit(int amount) {
+        balance += amount;
+    }
+
+    boolean withdraw(int amount) {
+        if (amount > balance) return false;
+        balance -= amount;
+        return true;
+    }
+
+    int getBalance() {
+        return balance;
+    }
+"""
+
+[[exercises]]
+name = "classes3"
+path = "Classes3.java"
+hint = """
+toString: return "(" + x + ", " + y + ")";
+equals: return x == o.x && y == o.y;
+
+(A private field of another object of the same class is accessible: private
+means private to the class, not to the object.)
+"""
+
+[[exercises]]
+name = "classes4"
+path = "Classes4.java"
+hint = """
+    static int count = 0;
+
+    Ticket(String event) {
+        this.event = event;
+        count++;
+        this.id = count;
+    }
+
+    static int created() {
+        return count;
+    }
+"""
