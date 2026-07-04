@@ -1,0 +1,29 @@
+[[exercises]]
+name = "enums1"
+path = "Enums1.java"
+hint = """
+    enum Season { SPRING, SUMMER, AUTUMN, WINTER }
+
+next with a switch expression:
+    return switch (s) {
+        case SPRING -> Season.SUMMER;
+        ...
+    };
+
+Or with arithmetic: Season.values()[(s.ordinal() + 1) % 4].
+"""
+
+[[exercises]]
+name = "enums2"
+path = "Enums2.java"
+hint = """
+    PENNY(1), NICKEL(5), DIME(10), QUARTER(25);
+
+    final int cents;
+
+    Coin(int cents) {
+        this.cents = cents;
+    }
+
+Then total: loop over coins and add coin.cents.
+"""
