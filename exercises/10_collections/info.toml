@@ -1,0 +1,55 @@
+[[exercises]]
+name = "collections1"
+path = "Collections1.java"
+hint = """
+    ArrayList<Integer> result = new ArrayList<>();
+    for (int n : numbers) {
+        if (n % 2 == 0) result.add(n);
+    }
+    return result;
+
+Check.equals compares the list contents, so an ArrayList and a List.of with
+the same elements count as equal.
+"""
+
+[[exercises]]
+name = "collections2"
+path = "Collections2.java"
+hint = """
+After removing index i, the element that was at i + 1 slides down to i, and
+the loop moves on to i + 1, skipping it. Loop backwards:
+
+    for (int i = list.size() - 1; i >= 0; i--)
+
+or replace the whole loop with `list.removeIf(x -> x.equals(value));`
+"""
+
+[[exercises]]
+name = "collections3"
+path = "Collections3.java"
+hint = """
+    counts.put(word, counts.getOrDefault(word, 0) + 1);
+
+There is also counts.merge(word, 1, Integer::sum) which does the same.
+"""
+
+[[exercises]]
+name = "collections4"
+path = "Collections4.java"
+hint = """
+firstDuplicate: walk the array, keep a Set of numbers seen so far.
+`if (!seen.add(n)) return n;` uses the fact that add returns false for a
+value that is already in the set.
+
+uniqueCount: add everything to a set, return its size().
+"""
+
+[[exercises]]
+name = "collections5"
+path = "Collections5.java"
+hint = """
+    copy.sort(Comparator.comparingInt(Student::getGrade).reversed());
+    for (int i = 0; i < n; i++) {
+        names.add(copy.get(i).getName());
+    }
+"""
