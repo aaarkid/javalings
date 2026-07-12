@@ -1,0 +1,39 @@
+[[exercises]]
+name = "exceptions1"
+path = "Exceptions1.java"
+hint = """
+    try {
+        return Integer.parseInt(text);
+    } catch (NumberFormatException e) {
+        return fallback;
+    }
+"""
+
+[[exercises]]
+name = "exceptions2"
+path = "Exceptions2.java"
+hint = """
+    if (b == 0) {
+        throw new IllegalArgumentException("cannot divide by zero");
+    }
+    return a / b;
+"""
+
+[[exercises]]
+name = "exceptions3"
+path = "Exceptions3.java"
+hint = """
+class InsufficientFundsException extends Exception { ... }
+
+    void withdraw(int amount) throws InsufficientFundsException {
+        if (amount > balance) {
+            throw new InsufficientFundsException("need " + (amount - balance) + " more");
+        }
+        balance -= amount;
+    }
+
+In main, wrap each withdraw call in try / catch (InsufficientFundsException e)
+and set `message = e.getMessage();` in the catch of the second one.
+The first call can also just live inside a try with an empty-ish catch, or
+main itself can declare `throws InsufficientFundsException`.
+"""
