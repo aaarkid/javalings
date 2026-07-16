@@ -1,0 +1,57 @@
+[[exercises]]
+name = "inheritance1"
+path = "Inheritance1.java"
+hint = """
+    class Dog extends Animal {
+        Dog(String name) {
+            super(name);
+        }
+
+        @Override
+        String sound() {
+            return "Woof";
+        }
+    }
+"""
+
+[[exercises]]
+name = "inheritance2"
+path = "Inheritance2.java"
+hint = """
+totalArea: loop over shapes and add shape.area() to a double.
+
+    class Circle extends Shape {
+        private final double r;
+        Circle(double r) { this.r = r; }
+        @Override String name() { return "Circle"; }
+        @Override double area() { return Math.PI * r * r; }
+    }
+"""
+
+[[exercises]]
+name = "inheritance3"
+path = "Inheritance3.java"
+hint = """
+    abstract class Vehicle {
+        abstract int wheels();
+        ...
+    }
+
+and in Bike:
+    @Override
+    int wheels() {
+        return 2;
+    }
+"""
+
+[[exercises]]
+name = "inheritance4"
+path = "Inheritance4.java"
+hint = """
+    class Duck implements Swimmer, Flyer {
+        public String swim() { return "Duck swims"; }
+        public String fly() { return "Duck flies"; }
+    }
+
+Interface methods are public, so the implementations must say `public` too.
+"""
