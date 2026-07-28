@@ -1,0 +1,42 @@
+[[exercises]]
+name = "recursion1"
+path = "Recursion1.java"
+hint = """
+    static long factorial(int n) {
+        if (n == 0) return 1;
+        return n * factorial(n - 1);
+    }
+
+sumDigits: n % 10 is the last digit, n / 10 is the rest. Base case n < 10.
+"""
+
+[[exercises]]
+name = "recursion2"
+path = "Recursion2.java"
+hint = """
+    static boolean isPalindrome(String s) {
+        return check(s.toLowerCase().replace(" ", ""));
+    }
+
+    static boolean check(String s) {
+        if (s.length() <= 1) return true;
+        if (s.charAt(0) != s.charAt(s.length() - 1)) return false;
+        return check(s.substring(1, s.length() - 1));
+    }
+
+powerString: n == 0 gives "", n == 1 gives s, otherwise s + " " + powerString(s, n - 1).
+"""
+
+[[exercises]]
+name = "recursion3"
+path = "Recursion3.java"
+hint = """
+    static long fib(int n) {
+        if (n < 2) return n;
+        if (cache[n] != 0) return cache[n];
+        cache[n] = fib(n - 1) + fib(n - 2);
+        return cache[n];
+    }
+
+hanoi: if disks == 0 return 0; else 2 * hanoi(disks - 1) + 1.
+"""
