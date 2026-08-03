@@ -1,0 +1,95 @@
+[[exercises]]
+name = "algorithms1"
+path = "Algorithms1.java"
+hint = """
+    int lo = 0, hi = arr.length - 1;
+    while (lo <= hi) {
+        steps++;
+        int mid = (lo + hi) / 2;
+        if (arr[mid] == value) return mid;
+        if (arr[mid] < value) lo = mid + 1;
+        else hi = mid - 1;
+    }
+    return -1;
+"""
+
+[[exercises]]
+name = "algorithms2"
+path = "Algorithms2.java"
+hint = """
+    int moves = 0;
+    for (int i = 1; i < arr.length; i++) {
+        int current = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
+            moves++;
+        }
+        arr[j + 1] = current;
+    }
+    return moves;
+"""
+
+[[exercises]]
+name = "algorithms3"
+path = "Algorithms3.java"
+hint = """
+merge: result array of length a.length + b.length, indexes i and j into a
+and b. While both have elements left, copy the smaller front one. Then copy
+whatever is left of a, then of b.
+
+mergeSort:
+    if (arr.length <= 1) return arr.clone();
+    int mid = arr.length / 2;
+    int[] left = mergeSort(Arrays.copyOfRange(arr, 0, mid));
+    int[] right = mergeSort(Arrays.copyOfRange(arr, mid, arr.length));
+    return merge(left, right);
+"""
+
+[[exercises]]
+name = "algorithms4"
+path = "Algorithms4.java"
+hint = """
+twoSum:
+    Map<Integer, Integer> seen = new HashMap<>();   // value -> index
+    for (int i = 0; i < nums.length; i++) {
+        int need = target - nums[i];
+        if (seen.containsKey(need)) return new int[]{seen.get(need), i};
+        seen.put(nums[i], i);
+    }
+    return new int[]{-1, -1};
+
+isAnagram: if lengths differ, false. int[] counts = new int[26]; add 1 for
+each letter of a, subtract 1 for each letter of b, then every count must be 0.
+"""
+
+[[exercises]]
+name = "algorithms5"
+path = "Algorithms5.java"
+hint = """
+isBalanced:
+    for each char c:
+        if c is '(' '[' '{': stack.push(c)
+        else: if stack is empty return false; char open = stack.pop();
+              if (open, c) is not a matching pair return false
+    return stack.isEmpty()
+
+evalRpn: split on " ". For each token: if it is "+", "-", "*" or "/", pop b
+then a (order matters for - and /), push a op b. Otherwise push
+Integer.parseInt(token). At the end pop the result. Use Deque<Integer>.
+"""
+
+[[exercises]]
+name = "algorithms6"
+path = "Algorithms6.java"
+hint = """
+1. Find S: loop over rows and columns, grid[r].charAt(c) == 'S'.
+2. int[][] dist = new int[rows][cols], filled with -1 (Arrays.fill per row).
+   dist[sr][sc] = 0; queue.add(new int[]{sr, sc}).
+3. While the queue is not empty: int[] cell = queue.poll(); for each of the
+   four directions (dr, dc) in {(1,0), (-1,0), (0,1), (0,-1)}: compute nr, nc;
+   skip if outside the grid, a '#', or dist[nr][nc] != -1. Otherwise set
+   dist[nr][nc] = dist[r][c] + 1; if that cell is 'E' return it; add to queue.
+4. return -1 after the loop.
+"""
