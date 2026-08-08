@@ -1,0 +1,56 @@
+[[exercises]]
+name = "project_library"
+path = "library"
+mode = "project:library.Main"
+hint = """
+Book.java:
+    package library.model;
+    public record Book(String title, String author, int year) { }
+
+Library.java: package library.service; import java.util.*; import library.model.Book;
+Keep a private List<Book>. byAuthor filters by author.equals(...). oldest
+loops and keeps the smallest year (start with null). titles maps to title
+and sorts: books.stream().map(Book::title).sorted().toList().
+"""
+
+[[exercises]]
+name = "project_inventory"
+path = "inventory"
+mode = "project:inventory.Main"
+hint = """
+MemoryStore.add:
+    Item existing = items.get(item.name());
+    if (existing != null) item = item.withQuantity(existing.quantity() + item.quantity());
+    items.put(item.name(), item);
+
+find: Optional.ofNullable(items.get(name)).
+totalValueCents: stream over values, mapToLong(Item::valueCents).sum().
+lowStock: filter quantity < threshold, sorted(Comparator.comparing(Item::name)).
+
+CommandParser.handle: switch (command) with cases "add", "remove", "find",
+"value", default. For "find", store.find(name) gives an Optional: if
+isPresent, build the reply from get(); otherwise "no such item: " + name.
+"""
+
+[[exercises]]
+name = "project_wordstats"
+path = "wordstats"
+mode = "project:wordstats.Main"
+hint = """
+TextLoader:
+    List<String> words = new ArrayList<>();
+    for (String line : Files.readAllLines(file)) {
+        for (String w : line.toLowerCase().split("[^a-z]+")) {
+            if (!w.isEmpty()) words.add(w);
+        }
+    }
+
+uniqueCount: new HashSet<>(words).size().
+topWords: Map<String, Integer> counts (merge), then
+    counts.entrySet().stream()
+        .map(e -> new WordCount(e.getKey(), e.getValue()))
+        .sorted(Comparator.comparingInt(WordCount::count).reversed().thenComparing(WordCount::word))
+        .limit(n).toList()
+longestWord: loop, replace only when strictly longer.
+averageLength: sum of lengths / (double) size, guard the empty case.
+"""
