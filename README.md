@@ -1,4 +1,10 @@
-# Javalings
+<p align="center">
+  <img src="assets/banner.jpg" alt="javalings" width="100%">
+</p>
+
+<p align="center">
+  67 exercises &middot; 18 chapters &middot; no build tool &middot; JDK 17+
+</p>
 
 Small exercises to get you used to reading and writing Java code. Inspired by
 [Rustlings](https://github.com/rust-lang/rustlings), written for someone who
