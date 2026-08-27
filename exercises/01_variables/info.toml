@@ -25,8 +25,9 @@ Use the number 3 instead of the word.
 name = "variables4"
 path = "Variables4.java"
 hint = """
-You have two options: remove `final`, or keep the constant and print a
-different variable with the value 4. Either one is a fine answer.
+The compiler says "cannot assign a value to final variable start". The line
+`start = current;` is the one to delete. Copying a constant into a normal
+variable (`int current = start;`) is fine, changing the constant is not.
 """
 
 [[exercises]]

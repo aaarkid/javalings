@@ -1,17 +1,25 @@
 // Variables4.java
 //
-// `final` makes a variable a constant: it can be given a value once and never
-// again. Python has no real constants, it just uses UPPER_CASE names as a
-// promise. Java enforces it.
+// `final` makes a variable a constant: it gets a value once and never again.
+// Python has no real constants, it just uses UPPER_CASE names as a promise.
+// Java enforces it.
 //
-// The program should print 3 and then 4. Make it compile by changing as little
-// as possible.
+// One line below tries to change a constant. Delete that line. Everything
+// else already does what the checks expect: `start` stays 3, `current`
+// ends up 4.
+
+import javalings.Check;
 
 public class Variables4 {
     public static void main(String[] args) {
-        int number = 3;
-        System.out.println("Number is " + number);
-        number = 4;
-        System.out.println("Number is " + number);
+        final int start = 3;
+        int current = start;
+        System.out.println("Start is " + start);
+
+        current = current + 1;
+        System.out.println("Current is " + current);
+
+        Check.equals(3, start, "start is still 3");
+        Check.equals(4, current, "current is 4");
     }
 }
