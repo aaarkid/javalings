@@ -2,18 +2,15 @@
   <img src="assets/banner.jpg" alt="javalings" width="100%">
 </p>
 
-<p align="center">
-  67 exercises &middot; 18 chapters &middot; no build tool &middot; JDK 17+
-</p>
+Java exercises in the style of [Rustlings](https://github.com/rust-lang/rustlings).
+I made these for my cousin, who knows some Python and wants to learn Java. The
+comments assume that: they say what is different from Python and skip what is
+the same.
 
-Small exercises to get you used to reading and writing Java code. Inspired by
-[Rustlings](https://github.com/rust-lang/rustlings), written for someone who
-already knows a bit of Python.
-
-Every exercise is a Java file that is broken in some way: it does not compile,
-or it runs but gives the wrong answer. You fix it, the runner checks it, you
-move on. The first chapters are about the language. The last ones are about
-writing real algorithms and splitting a program into several files.
+Each exercise is a Java file that is broken in some way. It does not compile,
+or it runs and gives the wrong answer. You fix it, the runner checks it, you go
+to the next one. The early chapters are about the language. The last two are
+algorithms and programs split across several files.
 
 ## Setup
 
@@ -21,33 +18,33 @@ You need a JDK, version 17 or newer. Check with:
 
     java -version
 
-If that prints a version number, you are ready. If not, install one, for
-example from https://adoptium.net. Any text editor works. VS Code with the
-"Extension Pack for Java" is a good choice.
+If that prints a version, you are ready. If not, install one, for example from
+https://adoptium.net. Any editor works. VS Code with the "Extension Pack for
+Java" is a good choice.
 
-Then get the exercises:
+Then:
 
     git clone https://github.com/aaarkid/javalings.git
     cd javalings
 
 ## Doing the exercises
 
-    java Javalings.java list          # see every exercise
+    java Javalings.java list          # every exercise, done or not
     java Javalings.java next          # run the first exercise that is not done
     java Javalings.java run intro2    # run one exercise by name
-    java Javalings.java hint intro2   # get a hint
-    java Javalings.java watch         # re-run automatically every time you save
+    java Javalings.java hint intro2   # a hint for it
+    java Javalings.java watch         # re-run whenever you save
 
-Each exercise file starts with a comment that explains the task, and a line
-`// I AM NOT DONE`. Fix the code, and when you are happy with it, delete that
-line. The runner then moves to the next exercise.
+Every exercise file starts with a comment that explains the task, and a line
+`// I AM NOT DONE`. Fix the code. When it passes, delete that line and the
+runner moves on.
 
-`watch` is the nicest way to work: open the exercise in your editor, keep the
-terminal next to it, and save to see what happens.
+`watch` is the way I would do it: exercise open in the editor, terminal next
+to it, save and look.
 
 ## Chapters
 
-| Chapter | What you learn |
+| Chapter | What it covers |
 |---|---|
 | 00_intro | running the exercises |
 | 01_variables | types, `final` |
@@ -73,6 +70,5 @@ README with the task, and the `I AM NOT DONE` line lives in that README.
 
 ## Solutions
 
-The `solutions/` folder has one answer for every exercise. Try for a while
-before you look. `scripts/check_solutions.sh` runs the whole set against the
-solutions.
+`solutions/` has one answer per exercise. Try for a while before you look.
+`scripts/check_solutions.sh` runs the whole set against the solutions.
