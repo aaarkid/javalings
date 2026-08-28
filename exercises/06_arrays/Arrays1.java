@@ -8,7 +8,7 @@
 //     numbers[0]                        // first element, like Python
 //     numbers.length                    // no parentheses! (unlike s.length())
 //
-// Fix the program.
+// Fix the program. Do not delete any line.
 
 // I AM NOT DONE
 

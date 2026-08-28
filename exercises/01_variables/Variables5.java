@@ -9,6 +9,8 @@
 //     String   text                     String name = "Ada";  (double quotes!)
 //
 // Give every variable below the right type so the program compiles.
+// Java also has `var`, which guesses the type for you. Do not use it here:
+// write every type out.
 //
 // The `import javalings.Check;` line pulls in a small helper that checks your
 // answers. You will see it in most exercises from now on.

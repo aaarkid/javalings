@@ -10,7 +10,7 @@ name = "variables2"
 path = "Variables2.java"
 hint = """
 `int x;` creates the variable but gives it nothing. Java refuses to read a
-variable that might be empty. Write `int x = 10;` (or any other number).
+variable that might be empty. Write `int x = 10;`.
 """
 
 [[exercises]]

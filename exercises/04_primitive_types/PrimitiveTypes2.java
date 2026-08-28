@@ -14,10 +14,10 @@ public class PrimitiveTypes2 {
     public static void main(String[] args) {
         int seconds = 3000000000;
         System.out.println("Seconds in ~95 years: " + seconds);
-        Check.isTrue(seconds > 0, "the number of seconds is positive");
+        Check.equals(3000000000L, seconds, "seconds holds 3 billion, as a long");
 
         int million = 1000000;
         int product = million * million;
-        Check.isTrue(product > 0, "a million times a million is positive");
+        Check.equals(1000000000000L, product, "a million times a million, as a long");
     }
 }

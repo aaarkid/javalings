@@ -20,7 +20,8 @@ public class Loops2 {
     static int firstMultiple(int start, int k) {
         int n = start;
         while (true) {
-            // your code here
+            // your code here, replacing this return
+            return -1;
         }
     }
 

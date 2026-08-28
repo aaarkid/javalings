@@ -1,8 +1,8 @@
 // Variables3.java
 //
 // A variable can change its value, but not its type.
-// Both lines that assign to `number` are fine: one of the other lines is not.
-// Fix it without deleting any of the println calls.
+// One line tries to put text into `number`. Replace the text with the number
+// it spells. Do not delete any line.
 
 // I AM NOT DONE
 

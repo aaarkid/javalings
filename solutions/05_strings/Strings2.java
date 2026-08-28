@@ -5,7 +5,8 @@
 // should feel familiar.)
 //
 // The program below expects `shout` to change the string in place. That does
-// not work. Fix `main` (not `shout`) so the check passes.
+// not work. Fix the `shout(word);` line in main so the check passes. Leave
+// `String word = "hello";` and the `shout` method as they are.
 
 import javalings.Check;
 

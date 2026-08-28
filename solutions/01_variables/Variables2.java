@@ -1,7 +1,8 @@
 // Variables2.java
 //
-// A variable must have a value before you use it. Give x a value so that the
-// if statement makes sense.
+// A variable must have a value before you use it. Java refuses to read a
+// variable that might be empty. Give x the value 10 on the line where it is
+// declared.
 
 public class Variables2 {
     public static void main(String[] args) {

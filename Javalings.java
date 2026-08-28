@@ -308,9 +308,18 @@ public class Javalings {
         Ui.note("stuck? " + Ui.paint(Ui.VIOLET, "java Javalings.java hint " + e.name()));
     }
 
+    static final int RUN_TIMEOUT_SECONDS = 15;
+
     static int exec(List<String> cmd) throws IOException {
         try {
-            return new ProcessBuilder(cmd).directory(ROOT.toFile()).inheritIO().start().waitFor();
+            Process p = new ProcessBuilder(cmd).directory(ROOT.toFile()).inheritIO().start();
+            if (!p.waitFor(RUN_TIMEOUT_SECONDS, java.util.concurrent.TimeUnit.SECONDS)) {
+                p.destroyForcibly();
+                System.out.println();
+                Ui.fail("still running after " + RUN_TIMEOUT_SECONDS + " seconds, stopped it. An endless loop?");
+                return 1;
+            }
+            return p.exitValue();
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             return 1;
