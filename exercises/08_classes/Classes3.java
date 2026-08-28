@@ -21,6 +21,8 @@ public class Classes3 {
         Check.equals("(3, 4)", p.toString(), "toString gives (3, 4)");
         Check.isTrue(p.equals(q), "two points with the same coordinates are equal");
         Check.isTrue(!p.equals(new Point(4, 3)), "different coordinates are not equal");
+        Check.isTrue(!p.equals(new Point(3, 5)), "same x, different y is not equal");
+        Check.equals("(1, -2)", new Point(1, -2).toString(), "toString gives (1, -2)");
     }
 }
 

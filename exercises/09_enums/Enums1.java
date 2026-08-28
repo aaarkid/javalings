@@ -22,6 +22,8 @@ import javalings.Check;
 public class Enums1 {
     public static void main(String[] args) {
         Check.equals(Season.SUMMER, next(Season.SPRING), "after spring comes summer");
+        Check.equals(Season.AUTUMN, next(Season.SUMMER), "after summer comes autumn");
+        Check.equals(Season.WINTER, next(Season.AUTUMN), "after autumn comes winter");
         Check.equals(Season.SPRING, next(Season.WINTER), "after winter comes spring");
         Check.equals(4, Season.values().length, "there are four seasons");
         Check.equals("AUTUMN", Season.AUTUMN.name(), "name() gives the text");

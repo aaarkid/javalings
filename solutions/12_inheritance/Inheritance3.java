@@ -23,6 +23,7 @@ public class Inheritance3 {
         }
         Check.equals(10, wheels, "4 + 2 + 4 wheels");
         Check.equals("Bike with 2 wheels", fleet[1].describe(), "describe a bike");
+        Check.isTrue(java.lang.reflect.Modifier.isAbstract(Vehicle.class.getModifiers()), "Vehicle is abstract");
     }
 }
 

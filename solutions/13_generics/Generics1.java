@@ -20,8 +20,10 @@ public class Generics1 {
     public static void main(String[] args) {
         List<String> names = List.of("Ada", "Bob", "Cleo");
         List<Integer> nums = List.of(1, 2, 3);
-        Check.equals("Cleo", last(names), "last name");
-        Check.equals(3, last(nums), "last number");
+        String name = last(names);
+        int num = last(nums);
+        Check.equals("Cleo", name, "last name");
+        Check.equals(3, num, "last number");
     }
 
     static <T> T last(List<T> list) {

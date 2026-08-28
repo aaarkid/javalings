@@ -12,8 +12,8 @@
 //
 // You met interfaces already: List is one, ArrayList implements it.
 //
-// Make Duck implement both Swimmer and Flyer. Then `describe` in main
-// should work for any object that can swim, using the interface type.
+// Make Duck implement both Swimmer and Flyer. Then the List<Swimmer> in
+// main can hold a Duck next to a Fish, and a Flyer variable can hold a Duck.
 
 // I AM NOT DONE
 

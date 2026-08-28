@@ -8,8 +8,9 @@
 // This is called polymorphism, and it works the same way as in Python,
 // except that Java checks the types up front.
 //
-// Implement `totalArea` for a list of shapes. Then add a Circle class
-// (area = Math.PI * r * r) so the second check passes too.
+// Implement `totalArea` for a list of shapes, and add a Circle class
+// (area = Math.PI * r * r, name "Circle"). Main does not compile until
+// Circle exists.
 
 // I AM NOT DONE
 
@@ -21,10 +22,9 @@ public class Inheritance2 {
         List<Shape> shapes = List.of(new Rectangle(2, 3), new Rectangle(1, 1));
         Check.equals(7.0, totalArea(shapes), "two rectangles");
 
-        // Uncomment when Circle exists:
-        // Shape c = new Circle(1);
-        // Check.isTrue(Math.abs(c.area() - Math.PI) < 0.0001, "circle of radius 1");
-        // Check.equals("Circle", c.name(), "circle name");
+        Shape c = new Circle(1);
+        Check.isTrue(Math.abs(c.area() - Math.PI) < 0.0001, "circle of radius 1");
+        Check.equals("Circle", c.name(), "circle name");
     }
 
     static double totalArea(List<Shape> shapes) {

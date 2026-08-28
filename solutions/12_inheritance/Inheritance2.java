@@ -8,8 +8,9 @@
 // This is called polymorphism, and it works the same way as in Python,
 // except that Java checks the types up front.
 //
-// Implement `totalArea` for a list of shapes. Then add a Circle class
-// (area = Math.PI * r * r) so the second check passes too.
+// Implement `totalArea` for a list of shapes, and add a Circle class
+// (area = Math.PI * r * r, name "Circle"). Main does not compile until
+// Circle exists.
 
 import javalings.Check;
 import java.util.List;

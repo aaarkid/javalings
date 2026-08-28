@@ -13,12 +13,16 @@ import javalings.Check;
 public class Generics2 {
     public static void main(String[] args) {
         Pair<String, Integer> p = new Pair<>("age", 13);
-        Check.equals("age", p.first(), "first of pair");
-        Check.equals(13, p.second(), "second of pair");
+        String key = p.first();
+        int value = p.second();
+        Check.equals("age", key, "first of pair");
+        Check.equals(13, value, "second of pair");
 
         Pair<Integer, String> s = p.swap();
-        Check.equals(13, s.first(), "first after swap");
-        Check.equals("age", s.second(), "second after swap");
+        int swappedKey = s.first();
+        String swappedValue = s.second();
+        Check.equals(13, swappedKey, "first after swap");
+        Check.equals("age", swappedValue, "second after swap");
     }
 }
 
