@@ -30,6 +30,7 @@ public class Javalings {
     static final Path EXERCISES = ROOT.resolve("exercises");
     static final Path BUILD = ROOT.resolve(".build");
     static final int RUN_TIMEOUT_SECONDS = 15;
+    static boolean watching = false;
 
     record Exercise(String name, Path path, String mode, String hint) {
         boolean isProject() {
@@ -198,36 +199,95 @@ public class Javalings {
         allDone();
     }
 
+    /**
+     * Watch mode is a small TUI: it takes over the screen (alternate buffer),
+     * redraws in place whenever a file under exercises/ changes, and reads
+     * single keys: h shows the hint, r re-runs, q quits. The terminal is put
+     * back the way it was on exit.
+     */
     static void watch(List<Exercise> all) throws Exception {
         Exercise current = firstNotDone(all);
         if (current == null) {
             allDone();
             return;
         }
-        Ui.clear();
-        run(current, true);
-        Ui.watchHelp(current);
+        watching = true;
+        Ui.enterScreen();
+        Runtime.getRuntime().addShutdownHook(new Thread(Ui::leaveScreen));
+        Keys keys = new Keys();
+        keys.start();
+        boolean showHint = false;
+        draw(current, showHint);
         Map<Path, FileTime> seen = snapshot();
         while (true) {
-            Thread.sleep(500);
+            int key = keys.poll(500);
             Map<Path, FileTime> now = snapshot();
-            if (now.equals(seen)) continue;
+            boolean changed = !now.equals(seen);
             seen = now;
-            Ui.clear();
+            if (key == 'q' || key == 3) {
+                return;
+            }
+            if (key == 'h') {
+                showHint = !showHint;
+            } else if (key != 'r' && !changed) {
+                continue;
+            }
+            if (changed) showHint = false;
             all = loadExercises();
             Exercise e = firstNotDone(all);
             if (e == null) {
+                Ui.clear();
                 allDone();
+                Ui.help("q quit");
+                while (keys.poll(500) != 'q') { }
                 return;
             }
+            String moved = null;
             if (!e.name().equals(current.name())) {
-                Ui.ok(current.name() + " done");
-                Ui.note("next up: " + e.name());
-                System.out.println();
+                moved = current.name();
                 current = e;
             }
-            run(e, true);
-            Ui.watchHelp(e);
+            draw(current, showHint);
+            if (moved != null) {
+                Ui.ok(moved + " done, next up: " + current.name());
+            }
+        }
+    }
+
+    static void draw(Exercise e, boolean showHint) throws IOException {
+        Ui.clear();
+        run(e, true);
+        if (showHint) {
+            System.out.println();
+            for (String line : e.hint().split("\n")) {
+                System.out.println("  " + Ui.primary("│") + " " + line);
+            }
+        }
+        System.out.println();
+        Ui.help("h hint", "r re-run", "q quit", "saving re-runs");
+    }
+
+    /** Reads single keys from the terminal in raw mode, on its own thread. */
+    static final class Keys extends Thread {
+        final java.util.concurrent.BlockingQueue<Integer> queue = new java.util.concurrent.LinkedBlockingQueue<>();
+
+        Keys() {
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            try {
+                int c;
+                while ((c = System.in.read()) != -1) queue.add(c);
+            } catch (IOException ignored) {
+                // stdin closed, nothing more to read
+            }
+        }
+
+        int poll(long millis) throws InterruptedException {
+            Integer c = queue.poll(millis, TimeUnit.MILLISECONDS);
+            return c == null ? -1 : c;
         }
     }
 
@@ -265,7 +325,7 @@ public class Javalings {
             for (String line : output) System.out.println("  " + Ui.compilerLine(line));
             System.out.println();
             Ui.fail(e.name() + " does not compile yet. the error names the line.");
-            if (verbose) Ui.help("hint: java Javalings.java hint " + e.name());
+            if (verbose && !watching) Ui.help("hint: java Javalings.java hint " + e.name());
             return false;
         }
 
@@ -273,7 +333,7 @@ public class Javalings {
         if (exec(java) != 0) {
             System.out.println();
             Ui.fail(e.name() + " compiled, but running it failed");
-            if (verbose) Ui.help("hint: java Javalings.java hint " + e.name());
+            if (verbose && !watching) Ui.help("hint: java Javalings.java hint " + e.name());
             return false;
         }
 
@@ -509,13 +569,29 @@ public class Javalings {
             System.out.println(sb);
         }
 
-        static void watchHelp(Exercise e) {
-            System.out.println();
-            help("hint: java Javalings.java hint " + e.name(), "saving re-runs", "ctrl+c quit");
-        }
 
         static void clear() {
             if (ON) System.out.print("[2J[H");
+        }
+
+        static void enterScreen() {
+            stty("-icanon -echo min 1");
+            if (ON) System.out.print("[?1049h[?25l");
+        }
+
+        static void leaveScreen() {
+            if (ON) System.out.print("[?25h[?1049l");
+            System.out.flush();
+            stty("sane");
+        }
+
+        static void stty(String mode) {
+            try {
+                new ProcessBuilder("sh", "-c", "stty " + mode + " < /dev/tty")
+                    .redirectErrorStream(true).start().waitFor();
+            } catch (IOException | InterruptedException ignored) {
+                // no tty: keys will not work, watching still does
+            }
         }
 
         /** One gradient per screen: violet to mint across the filled part of the bar. */
