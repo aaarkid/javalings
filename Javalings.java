@@ -1,4 +1,6 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -6,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
@@ -23,74 +26,10 @@ import java.util.stream.Stream;
 public class Javalings {
 
     static final String NOT_DONE = "// I AM NOT DONE";
-
-    /**
-     * Terminal colours, charm.land style: soft neon on a dark ground.
-     * Off when the output is not a terminal or NO_COLOR is set.
-     */
-    static final class Ui {
-        static final boolean ON = System.console() != null && System.getenv("NO_COLOR") == null;
-        static final String PINK = "\u001b[38;2;255;111;168m";
-        static final String VIOLET = "\u001b[38;2;157;124;255m";
-        static final String MINT = "\u001b[38;2;92;224;160m";
-        static final String AMBER = "\u001b[38;2;245;200;107m";
-        static final String DIM = "\u001b[38;2;122;122;133m";
-        static final String BOLD = "\u001b[1m";
-        static final String OFF = "\u001b[0m";
-        static final int WIDTH = 58;
-
-        static String paint(String color, String s) {
-            return ON ? color + s + OFF : s;
-        }
-
-        static String bold(String s) {
-            return ON ? BOLD + s + OFF : s;
-        }
-
-        static void clear() {
-            if (ON) System.out.print("\u001b[2J\u001b[H");
-        }
-
-        static void ok(String s) {
-            System.out.println("  " + paint(MINT, "\u2713 " + s));
-        }
-
-        static void fail(String s) {
-            System.out.println("  " + paint(PINK, "\u2717 " + s));
-        }
-
-        static void note(String s) {
-            System.out.println("  " + paint(DIM, s));
-        }
-
-        static void step(String s) {
-            System.out.println("  " + paint(VIOLET, "\u203a ") + s);
-        }
-
-        /** Rounded box with the exercise name, chapter and a progress meter. */
-        static void header(Exercise e, int done, int total) {
-            String chapter = e.path().getParent().getFileName().toString();
-            String left = "javalings  " + paint(DIM, "\u00b7") + "  " + bold(e.name());
-            String right = done + " / " + total;
-            int leftLen = ("javalings  \u00b7  " + e.name()).length();
-            String line1 = left + " ".repeat(Math.max(1, WIDTH - leftLen - right.length())) + paint(AMBER, right);
-
-            int cells = 24;
-            int filled = total == 0 ? 0 : (int) Math.round(cells * (double) done / total);
-            String meter = paint(VIOLET, "\u25b0".repeat(filled)) + paint(DIM, "\u25b1".repeat(cells - filled));
-            String line2 = meter + " ".repeat(Math.max(1, WIDTH - cells - chapter.length())) + paint(DIM, chapter);
-
-            String border = paint(DIM, "\u2500".repeat(WIDTH + 2));
-            System.out.println(paint(DIM, "\u256d") + border + paint(DIM, "\u256e"));
-            System.out.println(paint(DIM, "\u2502") + " " + line1 + " " + paint(DIM, "\u2502"));
-            System.out.println(paint(DIM, "\u2502") + " " + line2 + " " + paint(DIM, "\u2502"));
-            System.out.println(paint(DIM, "\u2570") + border + paint(DIM, "\u256f"));
-            System.out.println();
-        }
-    }
     static final Path ROOT = Path.of("").toAbsolutePath();
     static final Path EXERCISES = ROOT.resolve("exercises");
     static final Path BUILD = ROOT.resolve(".build");
+    static final int RUN_TIMEOUT_SECONDS = 15;
 
     record Exercise(String name, Path path, String mode, String hint) {
         boolean isProject() {
@@ -103,6 +42,10 @@ public class Javalings {
 
         boolean isDone() throws IOException {
             return Files.readAllLines(markerFile()).stream().noneMatch(l -> l.strip().equals(NOT_DONE));
+        }
+
+        String chapter() {
+            return path.getParent().getFileName().toString();
         }
 
         List<Path> sourceFiles() throws IOException {
@@ -128,7 +71,7 @@ public class Javalings {
         switch (args[0]) {
             case "list" -> list(all);
             case "run" -> run(find(all, arg(args)), true);
-            case "hint" -> System.out.println(find(all, arg(args)).hint());
+            case "hint" -> hint(find(all, arg(args)));
             case "next" -> next(all);
             case "verify" -> verify(all);
             case "watch" -> watch(all);
@@ -138,22 +81,28 @@ public class Javalings {
     }
 
     static void usage() {
-        System.out.println("""
-            Usage: java Javalings.java <command>
-
-              list             show every exercise and whether it is done
-              run <name>       compile and run one exercise
-              hint <name>      print the hint for one exercise
-              next             compile and run the first exercise that is not done
-              verify           run every exercise in order, stop at the first failure
-              watch            re-run the current exercise every time you save a file
-              reset <name>     copy the original exercise back from git
-            """);
+        System.out.println();
+        System.out.println("  " + Ui.title("javalings") + Ui.subtle("  java Javalings.java <command>"));
+        System.out.println();
+        String[][] rows = {
+            {"list", "every exercise, done or not"},
+            {"run <name>", "compile and run one exercise"},
+            {"hint <name>", "a hint for it"},
+            {"next", "run the first exercise that is not done"},
+            {"verify", "run every exercise in order, stop at the first failure"},
+            {"watch", "re-run whenever you save"},
+            {"reset <name>", "put the original exercise back"},
+        };
+        for (String[] r : rows) {
+            System.out.printf("  %s%s%n", Ui.ink(String.format("%-14s", r[0])), Ui.subtle(r[1]));
+        }
+        System.out.println();
     }
 
     static String arg(String[] args) {
         if (args.length < 2) {
-            System.out.println("Missing exercise name. Try: java Javalings.java list");
+            Ui.fail("missing exercise name");
+            Ui.help("java Javalings.java list");
             System.exit(1);
         }
         return args[1];
@@ -163,7 +112,8 @@ public class Javalings {
         for (Exercise e : all) {
             if (e.name().equals(name)) return e;
         }
-        System.out.println("No exercise called '" + name + "'. Try: java Javalings.java list");
+        Ui.fail("no exercise called " + name);
+        Ui.help("java Javalings.java list");
         System.exit(1);
         return null;
     }
@@ -171,14 +121,45 @@ public class Javalings {
     // ---- commands ----
 
     static void list(List<Exercise> all) throws IOException {
+        Exercise current = firstNotDone(all);
+        String chapter = "";
         int done = 0;
+        System.out.println();
         for (Exercise e : all) {
+            if (!e.chapter().equals(chapter)) {
+                chapter = e.chapter();
+                System.out.println("  " + Ui.primary(chapter));
+            }
             boolean d = e.isDone();
             if (d) done++;
-            String mark = d ? Ui.paint(Ui.MINT, "\u2713") : Ui.paint(Ui.DIM, "\u00b7");
-            System.out.printf("  %s  %-22s %s%n", mark, e.name(), Ui.paint(Ui.DIM, ROOT.relativize(e.path()).toString()));
+            String mark;
+            String name;
+            if (d) {
+                mark = Ui.success("✓");
+                name = Ui.subtle(e.name());
+            } else if (e == current) {
+                mark = Ui.accent(">");
+                name = Ui.accentBold(e.name());
+            } else {
+                mark = Ui.subtle("·");
+                name = Ui.ink(e.name());
+            }
+            System.out.printf("  %s %s%n", mark, name);
         }
-        System.out.printf("%n  %s%n", Ui.paint(Ui.AMBER, done + " / " + all.size() + " done"));
+        System.out.println();
+        System.out.println("  " + Ui.progress(done, all.size()));
+        System.out.println();
+    }
+
+    static void hint(Exercise e) {
+        System.out.println();
+        System.out.println("  " + Ui.title("hint") + Ui.subtle("  " + e.name()));
+        System.out.println();
+        for (String line : e.hint().split("\n")) {
+            System.out.println("  " + Ui.primary("│") + " " + line);
+        }
+        System.out.println();
+        Ui.help("java Javalings.java run " + e.name());
     }
 
     static Exercise firstNotDone(List<Exercise> all) throws IOException {
@@ -191,43 +172,44 @@ public class Javalings {
     static void next(List<Exercise> all) throws IOException {
         Exercise e = firstNotDone(all);
         if (e == null) {
-            System.out.println(ALL_DONE);
+            allDone();
             return;
         }
         run(e, true);
     }
 
     static void verify(List<Exercise> all) throws IOException {
+        System.out.println();
         for (Exercise e : all) {
             if (!run(e, false)) {
                 System.out.println();
-                Ui.fail("stopped at " + e.name() + ". Fix it, then run verify again.");
+                Ui.fail("stopped at " + e.name());
+                Ui.help("java Javalings.java hint " + e.name());
                 return;
             }
             if (!e.isDone()) {
                 System.out.println();
-                Ui.fail(e.name() + " runs, but still has the " + NOT_DONE + " line.");
-                Ui.note("Remove that line when you are happy with your solution.");
+                Ui.fail(e.name() + " runs, but still has the " + NOT_DONE + " line");
+                Ui.note("remove that line when you are happy with your solution");
                 return;
             }
             Ui.ok(e.name());
         }
-        System.out.println(ALL_DONE);
+        allDone();
     }
 
     static void watch(List<Exercise> all) throws Exception {
-        Ui.clear();
-        Ui.note("watching for changes, Ctrl+C stops");
-        System.out.println();
         Exercise current = firstNotDone(all);
         if (current == null) {
-            System.out.println(ALL_DONE);
+            allDone();
             return;
         }
+        Ui.clear();
         run(current, true);
+        Ui.watchHelp(current);
         Map<Path, FileTime> seen = snapshot();
         while (true) {
-            Thread.sleep(700);
+            Thread.sleep(500);
             Map<Path, FileTime> now = snapshot();
             if (now.equals(seen)) continue;
             seen = now;
@@ -235,15 +217,17 @@ public class Javalings {
             all = loadExercises();
             Exercise e = firstNotDone(all);
             if (e == null) {
-                System.out.println(ALL_DONE);
+                allDone();
                 return;
             }
             if (!e.name().equals(current.name())) {
-                Ui.ok(current.name() + " done, moving on to " + e.name());
+                Ui.ok(current.name() + " done");
+                Ui.note("next up: " + e.name());
                 System.out.println();
                 current = e;
             }
             run(e, true);
+            Ui.watchHelp(e);
         }
     }
 
@@ -251,72 +235,92 @@ public class Javalings {
         Path rel = ROOT.relativize(e.path());
         int code = new ProcessBuilder("git", "checkout", "--", rel.toString())
             .directory(ROOT.toFile()).inheritIO().start().waitFor();
-        System.out.println(code == 0 ? "Reset " + rel : "Could not reset " + rel);
+        if (code == 0) Ui.ok("reset " + rel);
+        else Ui.fail("could not reset " + rel);
+    }
+
+    static void allDone() throws IOException {
+        System.out.println();
+        System.out.println("  " + Ui.gradient("all " + loadExercises().size() + " done. go build something of your own."));
+        System.out.println();
     }
 
     // ---- compile and run ----
 
     static boolean run(Exercise e, boolean verbose) throws IOException {
-        if (verbose) {
-            List<Exercise> all = loadExercises();
-            int done = 0;
-            for (Exercise x : all) {
-                if (x.isDone()) done++;
-            }
-            Ui.header(e, done, all.size());
-        }
+        if (verbose) header(e);
         Path out = BUILD.resolve(e.name());
         deleteTree(out);
         Files.createDirectories(out);
 
         List<String> javac = new ArrayList<>(List.of("javac", "-d", out.toString(), "-Xlint:none"));
-        javac.add(ROOT.resolve("javalings/Check.java").toString());
+        javac.add("javalings/Check.java");
         for (Path p : e.sourceFiles()) javac.add(ROOT.relativize(p).toString());
 
-        if (verbose) Ui.step("compiling");
-        if (exec(javac) != 0) {
+        Ui.Spinner spinner = verbose ? Ui.spin("compiling " + e.name()) : null;
+        List<String> output = new ArrayList<>();
+        int code = capture(javac, output);
+        if (spinner != null) spinner.finish();
+        if (code != 0) {
+            for (String line : output) System.out.println("  " + Ui.compilerLine(line));
             System.out.println();
-            Ui.fail(e.name() + " does not compile yet. The error above names the line.");
-            if (verbose) hintReminder(e);
+            Ui.fail(e.name() + " does not compile yet. the error names the line.");
+            if (verbose) Ui.help("hint: java Javalings.java hint " + e.name());
             return false;
         }
 
         List<String> java = List.of("java", "-ea", "-cp", out.toString(), e.mainClass());
-        if (verbose) {
-            Ui.step("running");
-            System.out.println();
-        }
         if (exec(java) != 0) {
             System.out.println();
-            Ui.fail(e.name() + " compiled, but running it failed.");
-            if (verbose) hintReminder(e);
+            Ui.fail(e.name() + " compiled, but running it failed");
+            if (verbose) Ui.help("hint: java Javalings.java hint " + e.name());
             return false;
         }
 
         if (verbose) {
             System.out.println();
-            Ui.ok(e.name() + " runs without errors.");
+            Ui.ok(e.name() + " runs without errors");
             if (!e.isDone()) {
-                Ui.note("Happy with it? Remove the " + NOT_DONE + " line from "
-                    + ROOT.relativize(e.markerFile()) + " and move on.");
+                Ui.note("happy with it? remove the " + NOT_DONE + " line to move on");
             }
         }
         return true;
     }
 
-    static void hintReminder(Exercise e) {
-        Ui.note("stuck? " + Ui.paint(Ui.VIOLET, "java Javalings.java hint " + e.name()));
+    static void header(Exercise e) throws IOException {
+        List<Exercise> all = loadExercises();
+        int done = 0;
+        for (Exercise x : all) {
+            if (x.isDone()) done++;
+        }
+        System.out.println();
+        System.out.println("  " + Ui.title("javalings") + "  " + Ui.ink(Ui.bold(e.name()))
+            + Ui.subtle("  " + e.chapter()));
+        System.out.println("  " + Ui.progress(done, all.size()));
+        System.out.println();
     }
 
-    static final int RUN_TIMEOUT_SECONDS = 15;
+    static int capture(List<String> cmd, List<String> output) throws IOException {
+        Process p = new ProcessBuilder(cmd).directory(ROOT.toFile()).redirectErrorStream(true).start();
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line;
+            while ((line = r.readLine()) != null) output.add(line);
+        }
+        try {
+            return p.waitFor();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            return 1;
+        }
+    }
 
     static int exec(List<String> cmd) throws IOException {
         try {
             Process p = new ProcessBuilder(cmd).directory(ROOT.toFile()).inheritIO().start();
-            if (!p.waitFor(RUN_TIMEOUT_SECONDS, java.util.concurrent.TimeUnit.SECONDS)) {
+            if (!p.waitFor(RUN_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
                 p.destroyForcibly();
                 System.out.println();
-                Ui.fail("still running after " + RUN_TIMEOUT_SECONDS + " seconds, stopped it. An endless loop?");
+                Ui.fail("still running after " + RUN_TIMEOUT_SECONDS + " seconds, stopped it. an endless loop?");
                 return 1;
             }
             return p.exitValue();
@@ -414,11 +418,195 @@ public class Javalings {
         }
     }
 
-    static final String ALL_DONE = Ui.paint(Ui.MINT, """
+    /**
+     * Terminal styling. Violet is the structure, pink is the one pointer,
+     * mint and red are only ever success and failure. The progress bar is
+     * the single gradient on a screen. Colours are off when the output is
+     * not a terminal or NO_COLOR is set, and fall back to the 16 ANSI
+     * colours when the terminal does not announce truecolor.
+     */
+    static final class Ui {
+        static final boolean ON = System.console() != null && System.getenv("NO_COLOR") == null;
+        static final boolean TRUECOLOR = "truecolor".equals(System.getenv("COLORTERM"))
+            || "24bit".equals(System.getenv("COLORTERM"));
 
-          \u256d\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e
-          \u2502  You finished every exercise. Well done!     \u2502
-          \u2502  Now go build something of your own in Java. \u2502
-          \u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f
-          """);
+        // truecolor seed, shifted from charmtone
+        static final int[] PRIMARY = {111, 88, 255};   // violet
+        static final int[] ACCENT = {255, 111, 168};   // pink
+        static final int[] SUCCESS = {92, 224, 160};   // mint
+        static final int[] ERROR = {240, 78, 110};     // red
+        static final int[] SUBTLE = {133, 131, 146};   // grey
+        static final int[] INK = {236, 235, 240};      // near white
+
+        static final String OFF = "[0m";
+        static final String BOLD_ON = "[1m";
+
+        static String color(int[] rgb, int ansi) {
+            if (!ON) return "";
+            if (TRUECOLOR) return "[38;2;" + rgb[0] + ";" + rgb[1] + ";" + rgb[2] + "m";
+            return "[" + ansi + "m";
+        }
+
+        static String paint(int[] rgb, int ansi, String s) {
+            return ON ? color(rgb, ansi) + s + OFF : s;
+        }
+
+        static String bold(String s) {
+            return ON ? BOLD_ON + s + OFF : s;
+        }
+
+        static String primary(String s) {
+            return paint(PRIMARY, 34, s);
+        }
+
+        static String accent(String s) {
+            return paint(ACCENT, 35, s);
+        }
+
+        static String accentBold(String s) {
+            return ON ? color(ACCENT, 35) + BOLD_ON + s + OFF : s;
+        }
+
+        static String success(String s) {
+            return paint(SUCCESS, 32, s);
+        }
+
+        static String error(String s) {
+            return paint(ERROR, 31, s);
+        }
+
+        static String subtle(String s) {
+            return paint(SUBTLE, 90, s);
+        }
+
+        static String ink(String s) {
+            return paint(INK, 39, s);
+        }
+
+        static String title(String s) {
+            return ON ? color(PRIMARY, 34) + BOLD_ON + s + OFF : s;
+        }
+
+        static void ok(String s) {
+            System.out.println("  " + success("✓ " + s));
+        }
+
+        static void fail(String s) {
+            System.out.println("  " + error("✗ " + s));
+        }
+
+        static void note(String s) {
+            System.out.println("  " + subtle(s));
+        }
+
+        /** Help line: key in ink, description in subtle, groups joined by a dot. */
+        static void help(String... pairs) {
+            StringBuilder sb = new StringBuilder("  ");
+            for (int i = 0; i < pairs.length; i++) {
+                if (i > 0) sb.append(subtle(" • "));
+                sb.append(subtle(pairs[i]));
+            }
+            System.out.println(sb);
+        }
+
+        static void watchHelp(Exercise e) {
+            System.out.println();
+            help("hint: java Javalings.java hint " + e.name(), "saving re-runs", "ctrl+c quit");
+        }
+
+        static void clear() {
+            if (ON) System.out.print("[2J[H");
+        }
+
+        /** One gradient per screen: violet to mint across the filled part of the bar. */
+        static String progress(int done, int total) {
+            int cells = 30;
+            int filled = total == 0 ? 0 : (int) Math.round(cells * (double) done / total);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < filled; i++) {
+                double t = filled <= 1 ? 0 : (double) i / (filled - 1);
+                int[] c = blend(PRIMARY, SUCCESS, t);
+                sb.append(TRUECOLOR ? paint(c, 34, "━") : primary("━"));
+            }
+            sb.append(subtle("╌".repeat(cells - filled)));
+            sb.append(subtle("  " + done + "/" + total));
+            return sb.toString();
+        }
+
+        static String gradient(String s) {
+            if (!ON || !TRUECOLOR) return title(s);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < s.length(); i++) {
+                double t = s.length() <= 1 ? 0 : (double) i / (s.length() - 1);
+                sb.append(color(blend(PRIMARY, SUCCESS, t), 34)).append(BOLD_ON).append(s.charAt(i));
+            }
+            return sb.append(OFF).toString();
+        }
+
+        static int[] blend(int[] a, int[] b, double t) {
+            return new int[]{
+                (int) Math.round(a[0] + (b[0] - a[0]) * t),
+                (int) Math.round(a[1] + (b[1] - a[1]) * t),
+                (int) Math.round(a[2] + (b[2] - a[2]) * t),
+            };
+        }
+
+        /** javac output: the message in red, the file position in grey, carets and counts dim. */
+        static String compilerLine(String line) {
+            int at = line.indexOf(": error: ");
+            if (at > 0) {
+                String where = line.substring(0, at);
+                int slash = where.lastIndexOf('/');
+                if (slash >= 0) where = where.substring(slash + 1);
+                return subtle(where) + " " + error(line.substring(at + 2));
+            }
+            if (line.strip().equals("^") || line.matches("\\d+ errors?")) return subtle(line);
+            return ink(line);
+        }
+
+        /** Braille spinner on the current line while a long step runs. */
+        static Spinner spin(String label) {
+            Spinner s = new Spinner(label);
+            s.start();
+            return s;
+        }
+
+        static final class Spinner extends Thread {
+            static final String FRAMES = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏";
+            final String label;
+            volatile boolean running = true;
+
+            Spinner(String label) {
+                this.label = label;
+                setDaemon(true);
+            }
+
+            @Override
+            public void run() {
+                if (!ON) return;
+                int i = 0;
+                while (running) {
+                    System.out.print("\r  " + primary(String.valueOf(FRAMES.charAt(i % FRAMES.length())))
+                        + " " + subtle(label));
+                    System.out.flush();
+                    i++;
+                    try {
+                        Thread.sleep(80);
+                    } catch (InterruptedException ex) {
+                        return;
+                    }
+                }
+            }
+
+            void finish() {
+                running = false;
+                try {
+                    join();
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+                if (ON) System.out.print("\r[2K");
+            }
+        }
+    }
 }

@@ -8,7 +8,7 @@ public class Check {
 
     private static final boolean COLOR = System.console() != null && System.getenv("NO_COLOR") == null;
     private static final String MINT = "\u001b[38;2;92;224;160m";
-    private static final String PINK = "\u001b[38;2;255;111;168m";
+    private static final String RED = "\u001b[38;2;240;78;110m";
     private static final String OFF = "\u001b[0m";
 
     private static void pass(String what) {
@@ -41,7 +41,7 @@ public class Check {
 
     public static void fail(String message) {
         System.out.println();
-        System.out.println("  " + (COLOR ? PINK + "\u2717 check failed: " + message + OFF : "CHECK FAILED: " + message));
+        System.out.println("  " + (COLOR ? RED + "\u2717 check failed: " + message + OFF : "CHECK FAILED: " + message));
         System.exit(1);
     }
 

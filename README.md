@@ -42,6 +42,10 @@ runner moves on.
 `watch` is the way I would do it: exercise open in the editor, terminal next
 to it, save and look.
 
+<p align="center">
+  <img src="assets/demo.gif" alt="run variables4: fails, then passes" width="100%">
+</p>
+
 ## Chapters
 
 | Chapter | What it covers |
