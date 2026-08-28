@@ -24,6 +24,7 @@ public class Lambdas2 {
 
         Check.equals(List.of(2, 4, 6, 8), doubled, "doubled numbers");
         Check.equals(List.of(2, 5), lengths, "word lengths");
+        Check.equals(List.of("HI", "THERE"), applyToAll(words, String::toUpperCase), "applyToAll with a String result");
     }
 
     static <T, R> List<R> applyToAll(List<T> list, Function<T, R> f) {

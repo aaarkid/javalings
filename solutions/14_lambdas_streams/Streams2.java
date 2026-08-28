@@ -10,7 +10,8 @@
 //     .collect(Collectors.joining(", "))       join strings
 //     .collect(Collectors.groupingBy(f))       Map from key to list of items
 //
-// Implement the methods using streams.
+// Implement the methods using streams. Duplicates ("fig" twice) are dropped
+// everywhere: every method works on the distinct words.
 
 import javalings.Check;
 import java.util.Comparator;
@@ -30,6 +31,7 @@ public class Streams2 {
         Map<Integer, List<String>> byLength = groupByLength(words);
         Check.equals(List.of("pear", "kiwi", "plum"), byLength.get(4), "4-letter words");
         Check.equals(List.of("apple"), byLength.get(5), "5-letter words");
+        Check.equals(List.of("fig"), byLength.get(3), "3-letter words, fig only once");
     }
 
     static String sortedUnique(List<String> words) {

@@ -21,9 +21,9 @@ public class Algorithms4 {
         Check.arrayEquals(new int[]{1, 2}, twoSum(new int[]{3, 2, 4}, 6), "2 + 4, not 3 + 3");
         Check.arrayEquals(new int[]{-1, -1}, twoSum(new int[]{1, 2}, 10), "no pair");
 
-        int[] big = new int[300_000];
+        int[] big = new int[3_000_000];
         for (int i = 0; i < big.length; i++) big[i] = i;
-        Check.arrayEquals(new int[]{299_998, 299_999}, twoSum(big, 599_997), "300k elements (nested loops are too slow here)");
+        Check.arrayEquals(new int[]{2_999_998, 2_999_999}, twoSum(big, 5_999_997), "3 million elements (nested loops never finish here)");
 
         Check.isTrue(isAnagram("listen", "silent"), "listen / silent");
         Check.isTrue(!isAnagram("hello", "world"), "hello / world");

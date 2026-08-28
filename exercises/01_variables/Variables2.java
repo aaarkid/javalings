@@ -8,7 +8,7 @@
 
 public class Variables2 {
     public static void main(String[] args) {
-        int x;
+        int x; // TODO: give x the value 10
         if (x == 10) {
             System.out.println("x is ten!");
         } else {

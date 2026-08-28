@@ -19,7 +19,7 @@ public class Variables4 {
         System.out.println("Start is " + start);
 
         current = current + 1;
-        start = current;
+        start = current; // TODO: delete this line
         System.out.println("Current is " + current);
 
         Check.equals(3, start, "start is still 3");

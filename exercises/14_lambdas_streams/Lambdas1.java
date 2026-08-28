@@ -30,6 +30,8 @@ public class Lambdas1 {
         Check.equals(49, square.apply(7), "square of 7");
         Check.isTrue(isLong.test("elephant"), "elephant is long");
         Check.isTrue(!isLong.test("cat"), "cat is not long");
+        Check.isTrue(!isLong.test("fives"), "5 letters is not long");
+        Check.isTrue(isLong.test("sixsix"), "6 letters is long");
         Check.equals("ababab", repeat.apply("ab", 3), "repeat ab 3 times");
     }
 }

@@ -22,7 +22,7 @@ public class If2 {
     }
 
     static String fooIfFizz(String input) {
-        if (input == "fizz") {
+        if (input == "fizz") { // TODO: compare with .equals, then add the "fuzz" case
             return "foo";
         } else {
             return "baz";

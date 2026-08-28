@@ -17,8 +17,8 @@ import javalings.Check;
 public class Arrays1 {
     public static void main(String[] args) {
         int[] scores = {90, 85, 77, 100};
-        System.out.println("There are " + scores.length() + " scores.");
-        System.out.println("The last one is " + scores[4]);
+        System.out.println("There are " + scores.length() + " scores."); // TODO: fix
+        System.out.println("The last one is " + scores[4]); // TODO: fix, do not delete
         Check.equals(100, scores[scores.length - 1], "last score");
     }
 }

@@ -20,7 +20,7 @@ public class Methods3 {
         Check.equals(49, square(7));
     }
 
-    static void square(int num) {
-        num * num;
+    static void square(int num) { // TODO: fix the return type
+        num * num; // TODO: fix this line
     }
 }

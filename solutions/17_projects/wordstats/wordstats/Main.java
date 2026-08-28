@@ -21,6 +21,7 @@ public class Main {
         Check.equals(List.of(new WordCount("the", 18), new WordCount("he", 5), new WordCount("light", 5)),
             stats.topWords(3), "top 3 words");
         Check.equals("lighthouse", stats.longestWord(), "longest word");
+        Check.equals("abcd", new TextStats(List.of("abcd", "xyzw", "ab")).longestWord(), "longest word: first one wins a tie");
         Check.isTrue(Math.abs(stats.averageLength() - 4.0672) < 0.001,
             "average length is about 4.07 (got " + stats.averageLength() + ")");
 

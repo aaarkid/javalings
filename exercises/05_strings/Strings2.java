@@ -14,8 +14,8 @@ import javalings.Check;
 
 public class Strings2 {
     public static void main(String[] args) {
-        String word = "hello";
-        shout(word);
+        String word = "hello"; // do not change this line
+        shout(word); // TODO: fix this line
         Check.equals("HELLO!", word, "word after shouting");
     }
 

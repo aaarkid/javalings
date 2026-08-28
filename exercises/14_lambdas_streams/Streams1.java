@@ -29,6 +29,7 @@ public class Streams1 {
         Check.equals(List.of("ADA", "ALAN", "AMY"), upperA(names), "names starting with A, uppercased");
     }
 
+    // every number greater than 7, doubled, in order
     static List<Integer> doubleBig(List<Integer> nums) {
         return List.of();
     }

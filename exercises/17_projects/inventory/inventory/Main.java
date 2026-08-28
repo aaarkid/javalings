@@ -13,16 +13,17 @@ public class Main {
         store.add(new Item("apple", 5, 120));
         store.add(new Item("pear", 2, 150));
         store.add(new Item("apple", 3, 110));
+        store.add(new Item("fig", 3, 50));
 
         Check.isTrue(store.find("apple").isPresent(), "apple is there");
         Check.equals(8, store.find("apple").get().quantity(), "apple quantities combined");
         Check.equals(110, store.find("apple").get().priceCents(), "apple price is the newest");
         Check.isTrue(store.find("kiwi").isEmpty(), "no kiwi");
-        Check.equals(8L * 110 + 2L * 150, store.totalValueCents(), "total value");
-        Check.equals(List.of("pear"), store.lowStock(3).stream().map(Item::name).toList(), "low stock");
+        Check.equals(8L * 110 + 2L * 150 + 3L * 50, store.totalValueCents(), "total value");
+        Check.equals(List.of("pear"), store.lowStock(3).stream().map(Item::name).toList(), "low stock: below 3, so fig with exactly 3 is not");
         Check.isTrue(store.remove("pear"), "remove pear");
         Check.isTrue(!store.remove("pear"), "pear already gone");
-        Check.equals(8L * 110, store.totalValueCents(), "value after removing pear");
+        Check.equals(8L * 110 + 3L * 50, store.totalValueCents(), "value after removing pear");
 
         CommandParser cli = new CommandParser(new MemoryStore());
         Check.equals("added milk", cli.handle("add milk 4 99"), "add command");

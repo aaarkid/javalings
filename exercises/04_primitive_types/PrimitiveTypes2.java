@@ -12,12 +12,12 @@ import javalings.Check;
 
 public class PrimitiveTypes2 {
     public static void main(String[] args) {
-        int seconds = 3000000000;
+        int seconds = 3000000000; // TODO: fix the type
         System.out.println("Seconds in ~95 years: " + seconds);
         Check.equals(3000000000L, seconds, "seconds holds 3 billion, as a long");
 
         int million = 1000000;
-        int product = million * million;
+        int product = million * million; // TODO: fix the type, and where the overflow happens
         Check.equals(1000000000000L, product, "a million times a million, as a long");
     }
 }

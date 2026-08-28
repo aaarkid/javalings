@@ -28,6 +28,13 @@ public class Algorithms1 {
         steps = 0;
         Check.equals(388_888, binarySearch(big, 777_776), "finds a value in a million elements");
         Check.isTrue(steps >= 1 && steps <= 25, "binary search on a million elements took " + steps + " steps (must be between 1 and 25)");
+
+        long start = System.nanoTime();
+        for (int i = 0; i < 200_000; i++) {
+            binarySearch(big, (i * 7) % big.length * 2);
+        }
+        long millis = (System.nanoTime() - start) / 1_000_000;
+        Check.isTrue(millis < 2000, "200k lookups took " + millis + " ms (must be under 2000, linear search takes minutes)");
     }
 
     static int steps = 0;

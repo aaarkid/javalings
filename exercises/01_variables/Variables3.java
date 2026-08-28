@@ -10,7 +10,7 @@ public class Variables3 {
     public static void main(String[] args) {
         int number = 3;
         System.out.println("Number is " + number);
-        number = "three";
+        number = "three"; // TODO: fix this line
         System.out.println("Number is " + number);
         number = 4;
         System.out.println("Number is " + number);
